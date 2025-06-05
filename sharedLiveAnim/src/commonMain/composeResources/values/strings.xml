@@ -1,0 +1,28 @@
+<resources>
+
+    <!-- Using
+    @Composable
+    fun stringResource(resource: StringResource, vararg formatArgs: Any): String {...}
+    Text(stringResource(Res.string.app_name))
+    =============
+
+    suspend fun getString(resource: StringResource, vararg formatArgs: Any): String
+    val appName = getString(Res.string.app_name)
+    -->
+
+    <!-- Auth -->
+    <string name="title_login">Welcome</string>
+    <string name="label_username">Username</string>
+    <string name="label_password">Password</string>
+    <string name="login_or_sign_up">Log in or sign up</string>
+    <string name="terms">Terms of use and Privacy policy</string>
+    <string name="button_login">Login</string>
+
+    <string name="login_error_unknown">Unknown problem</string>
+    <string name="login_error_empty_creds">Username or password can't be empty</string>
+    <string name="login_error_wrong_username">Invalid Email address.\nPlease check it.</string>
+    <string name="login_error_wrong_password">Password should be at least 8 characters\nand contains lowercase, uppercase symbols and numbers</string>
+
+    <!-- Home -->
+
+</resources>
