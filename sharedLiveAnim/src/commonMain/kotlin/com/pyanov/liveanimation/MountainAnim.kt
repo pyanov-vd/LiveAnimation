@@ -19,6 +19,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
@@ -26,7 +28,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.pyanov.liveanimation.designSystem.LATheme
 import com.pyanov.liveanimation.designSystem.SpacerSmall
 import com.pyanov.liveanimation.designSystem.controlls.AppEditText
 
@@ -50,7 +51,15 @@ fun MountainAnim() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(LATheme.colors.background)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF7383C2), // Верхний цвет
+                        Color(0xFFD6B0C1), // Нижний цвет
+                        Color(0xFFD6B0C1)  // Повторяем нижний цвет для более плавного перехода
+                    )
+                )
+            )
     ) {
         // Гора на заднем фоне
         Canvas(
