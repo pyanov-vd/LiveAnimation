@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +31,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.pyanov.liveanimation.designSystem.SpacerSmall
 import com.pyanov.liveanimation.designSystem.controlls.AppEditText
+import com.pyanov.liveanimation.drawBackMountainLayer
+import com.pyanov.liveanimation.drawFrontMountainLayer
+import com.pyanov.liveanimation.drawMiddleMountainLayer
+import androidx.compose.ui.draw.alpha
 
 
 @Composable
@@ -41,11 +46,53 @@ fun MountainAnim() {
     val density = LocalDensity.current
     val isKeyboardVisible = WindowInsets.ime.getBottom(density) > 0
 
+    var animateMountainLayers by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        animateMountainLayers = true
+    }
+
     // Анимация смещения зрачков
     val pupilOffsetY by animateFloatAsState(
         targetValue = if (isKeyboardVisible) 10f else 0f,
         animationSpec = tween(durationMillis = 300),
         label = "pupilOffset"
+    )
+
+    // Анимация для заднего слоя (выезжает справа)
+    val backLayerOffsetX by animateFloatAsState(
+        targetValue = if (animateMountainLayers) 0f else 1000f, // 1000f - примерное значение для выезда за экран
+        animationSpec = tween(durationMillis = 1000, delayMillis = 0),
+        label = "backLayerOffsetX"
+    )
+    val backLayerAlpha by animateFloatAsState(
+        targetValue = if (animateMountainLayers) 1f else 0f,
+        animationSpec = tween(durationMillis = 1000, delayMillis = 0),
+        label = "backLayerAlpha"
+    )
+
+    // Анимация для среднего слоя (выезжает слева)
+    val middleLayerOffsetX by animateFloatAsState(
+        targetValue = if (animateMountainLayers) 0f else -1000f, // -1000f - примерное значение для выезда за экран
+        animationSpec = tween(durationMillis = 1000, delayMillis = 350),
+        label = "middleLayerOffsetX"
+    )
+    val middleLayerAlpha by animateFloatAsState(
+        targetValue = if (animateMountainLayers) 1f else 0f,
+        animationSpec = tween(durationMillis = 1000, delayMillis = 350),
+        label = "middleLayerAlpha"
+    )
+
+    // Анимация для переднего слоя (выезжает справа)
+    val frontLayerOffsetX by animateFloatAsState(
+        targetValue = if (animateMountainLayers) 0f else 1000f, // 1000f - примерное значение для выезда за экран
+        animationSpec = tween(durationMillis = 1000, delayMillis = 200),
+        label = "frontLayerOffsetX"
+    )
+    val frontLayerAlpha by animateFloatAsState(
+        targetValue = if (animateMountainLayers) 1f else 0f,
+        animationSpec = tween(durationMillis = 1000, delayMillis = 200),
+        label = "frontLayerAlpha"
     )
 
     Box(
@@ -61,7 +108,59 @@ fun MountainAnim() {
                 )
             )
     ) {
-        // Гора на заднем фоне
+        // Слои гор на горизонте
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(x = backLayerOffsetX.dp)
+                .alpha(backLayerAlpha)
+        ) {
+            val width = size.width
+            val height = size.height
+            drawBackMountainLayer(
+                canvasWidth = width,
+                canvasHeight = height,
+                color = Color(0xFFa17598),
+                layerHeight = height * 0.4f,
+                startY = height * 0.1f
+            )
+        }
+
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(x = middleLayerOffsetX.dp)
+                .alpha(middleLayerAlpha)
+        ) {
+            val width = size.width
+            val height = size.height
+            drawMiddleMountainLayer(
+                canvasWidth = width,
+                canvasHeight = height,
+                color = Color(0xFF575da5),
+                layerHeight = height * 0.35f,
+                startY = height * 0.2f
+            )
+        }
+
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(x = frontLayerOffsetX.dp)
+                .alpha(frontLayerAlpha)
+        ) {
+            val width = size.width
+            val height = size.height
+            drawFrontMountainLayer(
+                canvasWidth = width,
+                canvasHeight = height,
+                color = Color(0xFF3b467d),
+                layerHeight = height * 0.3f,
+                startY = height * 0.3f
+            )
+        }
+
+        // Основная гора
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
