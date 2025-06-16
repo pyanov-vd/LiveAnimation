@@ -36,6 +36,7 @@ import com.pyanov.liveanimation.drawFrontMountainLayer
 import com.pyanov.liveanimation.drawMiddleMountainLayer
 import androidx.compose.ui.draw.alpha
 
+private const val ANIM_DURATION = 850
 
 @Composable
 fun MountainAnim() {
@@ -59,39 +60,39 @@ fun MountainAnim() {
         label = "pupilOffset"
     )
 
-    // Анимация для заднего слоя (выезжает справа)
-    val backLayerOffsetX by animateFloatAsState(
-        targetValue = if (animateMountainLayers) 0f else 1000f, // 1000f - примерное значение для выезда за экран
-        animationSpec = tween(durationMillis = 1000, delayMillis = 0),
-        label = "backLayerOffsetX"
+    // Анимация для заднего слоя (выезжает снизу)
+    val backLayerOffsetY by animateFloatAsState(
+        targetValue = if (animateMountainLayers) 0f else 2000f, // 2000f - значение для выезда за экран снизу
+        animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 0),
+        label = "backLayerOffsetY"
     )
     val backLayerAlpha by animateFloatAsState(
         targetValue = if (animateMountainLayers) 1f else 0f,
-        animationSpec = tween(durationMillis = 1000, delayMillis = 0),
+        animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 0),
         label = "backLayerAlpha"
     )
 
-    // Анимация для среднего слоя (выезжает слева)
-    val middleLayerOffsetX by animateFloatAsState(
-        targetValue = if (animateMountainLayers) 0f else -1000f, // -1000f - примерное значение для выезда за экран
-        animationSpec = tween(durationMillis = 1000, delayMillis = 350),
-        label = "middleLayerOffsetX"
+    // Анимация для среднего слоя (выезжает снизу)
+    val middleLayerOffsetY by animateFloatAsState(
+        targetValue = if (animateMountainLayers) 0f else 2000f, // 2000f - значение для выезда за экран снизу
+        animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 200),
+        label = "middleLayerOffsetY"
     )
     val middleLayerAlpha by animateFloatAsState(
         targetValue = if (animateMountainLayers) 1f else 0f,
-        animationSpec = tween(durationMillis = 1000, delayMillis = 350),
+        animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 200),
         label = "middleLayerAlpha"
     )
 
-    // Анимация для переднего слоя (выезжает справа)
-    val frontLayerOffsetX by animateFloatAsState(
-        targetValue = if (animateMountainLayers) 0f else 1000f, // 1000f - примерное значение для выезда за экран
-        animationSpec = tween(durationMillis = 1000, delayMillis = 200),
-        label = "frontLayerOffsetX"
+    // Анимация для переднего слоя (выезжает снизу)
+    val frontLayerOffsetY by animateFloatAsState(
+        targetValue = if (animateMountainLayers) 0f else 2000f, // 2000f - значение для выезда за экран снизу
+        animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 350),
+        label = "frontLayerOffsetY"
     )
     val frontLayerAlpha by animateFloatAsState(
         targetValue = if (animateMountainLayers) 1f else 0f,
-        animationSpec = tween(durationMillis = 1000, delayMillis = 200),
+        animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 350),
         label = "frontLayerAlpha"
     )
 
@@ -112,7 +113,7 @@ fun MountainAnim() {
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
-                .offset(x = backLayerOffsetX.dp)
+                .offset(y = backLayerOffsetY.dp)
                 .alpha(backLayerAlpha)
         ) {
             val width = size.width
@@ -129,7 +130,7 @@ fun MountainAnim() {
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
-                .offset(x = middleLayerOffsetX.dp)
+                .offset(y = middleLayerOffsetY.dp)
                 .alpha(middleLayerAlpha)
         ) {
             val width = size.width
@@ -146,7 +147,7 @@ fun MountainAnim() {
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
-                .offset(x = frontLayerOffsetX.dp)
+                .offset(y = frontLayerOffsetY.dp)
                 .alpha(frontLayerAlpha)
         ) {
             val width = size.width
