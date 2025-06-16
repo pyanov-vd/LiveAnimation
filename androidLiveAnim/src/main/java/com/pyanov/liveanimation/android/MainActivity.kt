@@ -7,6 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.pyanov.liveanimation.AppContent
+import com.pyanov.liveanimation.MountainAnim
+import com.pyanov.liveanimation.designSystem.LATheme
 
 class MainActivity : ComponentActivity() {
 
@@ -20,5 +22,9 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun DefaultPreview() {
-    AppContent()
+    LATheme {
+        MountainAnim(
+            isAnimatedAlready = true
+        )
+    }
 }

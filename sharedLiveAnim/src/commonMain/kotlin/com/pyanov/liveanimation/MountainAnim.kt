@@ -22,16 +22,20 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
 
 @Composable
-fun MountainAnim() {
+fun MountainAnim(
+    isAnimatedAlready: Boolean = false
+) {
     val density = LocalDensity.current
     val isKeyboardVisible = WindowInsets.ime.getBottom(density) > 0
 
-    var animateMountainLayers by remember { mutableStateOf(false) }
+    var animateAuthFields by remember { mutableStateOf(isAnimatedAlready) }
 
     LaunchedEffect(Unit) {
-        animateMountainLayers = true
+        animateAuthFields = true
     }
 
     // Анимация смещения зрачков
@@ -39,6 +43,18 @@ fun MountainAnim() {
         targetValue = if (isKeyboardVisible) 10f else 0f,
         animationSpec = tween(durationMillis = 300),
         label = "pupilOffset"
+    )
+
+    // Анимация для AuthInputFields (масштаб и прозрачность)
+    val authInputFieldsScale by animateFloatAsState(
+        targetValue = if (animateAuthFields) 1f else 0f,
+        animationSpec = tween(durationMillis = 850, delayMillis = 550),
+        label = "authInputFieldsScale"
+    )
+    val authInputFieldsAlpha by animateFloatAsState(
+        targetValue = if (animateAuthFields) 1f else 0f,
+        animationSpec = tween(durationMillis = 850, delayMillis = 550),
+        label = "authInputFieldsAlpha"
     )
 
     Box(
@@ -56,7 +72,7 @@ fun MountainAnim() {
     ) {
         // Фон с горами и глазами
         MountainBackground(
-            animateMountainLayers = animateMountainLayers,
+            animateMountainLayers = animateAuthFields,
             pupilOffsetY = pupilOffsetY
         )
 
@@ -64,9 +80,11 @@ fun MountainAnim() {
         AuthInputFields(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
-                .offset(y = (-50).dp)
+                .padding(24.dp)
+                .offset(y = 56.dp)
                 .align(Alignment.Center)
+                .scale(authInputFieldsScale)
+                .alpha(authInputFieldsAlpha)
         )
     }
 } 
