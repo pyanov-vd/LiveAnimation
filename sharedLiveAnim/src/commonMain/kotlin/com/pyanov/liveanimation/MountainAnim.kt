@@ -161,25 +161,31 @@ fun MountainAnim() {
             )
         }
 
-        // Основная гора
+        // Глаза на левой горе заднего слоя
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
-                .offset(y = (-200).dp)
+                .offset(y = backLayerOffsetY.dp) // Применяем то же смещение по Y, что и к заднему слою
+                .alpha(backLayerAlpha) // И ту же прозрачность
         ) {
             val width = size.width
             val height = size.height
-
-            // Вычисляем размеры горы (четверть экрана)
-            val mountainWidth = width * 0.25f
-            val mountainHeight = height * 0.25f
-
-            // Вычисляем начальную точку для центрирования
-            val startX = (width - mountainWidth) / 2
-            val startY = (height - mountainHeight) / 2
-
-            drawMountain(width, height, mountainWidth, mountainHeight, startX, startY)
-            drawEyes(mountainWidth, mountainHeight, startX, startY, pupilOffsetY)
+            
+            // Координаты для левой горы заднего слоя
+            val backLayerStartY = height * 0.1f
+            val backLayerHeight = height * 0.4f
+            
+            // Примерные координаты для центра глаз на левой горе
+            val eyeCenterX = width * 0.32f // Смещено к центру левой горы
+            val eyeCenterY = backLayerStartY + backLayerHeight * 0.6f // Чуть выше середины горы
+            val eyeSize = backLayerHeight * 0.1f // Уменьшаем размер глаз
+            
+            drawEyes(
+                eyeCenterX = eyeCenterX,
+                eyeCenterY = eyeCenterY,
+                eyeSize = eyeSize,
+                pupilOffsetY = pupilOffsetY
+            )
         }
 
         // Поля ввода по центру
