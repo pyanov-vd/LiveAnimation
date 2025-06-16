@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -15,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -23,10 +25,12 @@ import com.pyanov.liveanimation.EMPTY_STRING
 import com.pyanov.liveanimation.designSystem.LATheme
 import com.pyanov.liveanimation.designSystem.getDefaultShape
 
+private val mainColor = Color(0xFF263063)
+
 @Composable
 fun AppEditText(
     modifier: Modifier = Modifier,
-    startLabel: String = EMPTY_STRING,
+    placeholder: String = EMPTY_STRING,
     startText: String = EMPTY_STRING,
     capitalization: KeyboardCapitalization = KeyboardCapitalization.Sentences,
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -38,16 +42,15 @@ fun AppEditText(
     onValueChange: (String) -> Unit,
 ) {
     var text by remember { mutableStateOf(startText) }
-    val label by remember { mutableStateOf(startLabel.trim()) }
 
     OutlinedTextField(
         modifier = modifier,
+        placeholder = { makeLabel(placeholder) },
         value = text,
         onValueChange = {
             text = it
             onValueChange.invoke(text)
         },
-        label = { makeLabel(label) },
         keyboardOptions = KeyboardOptions(
             capitalization = capitalization,
             keyboardType = keyboardType,
@@ -55,9 +58,22 @@ fun AppEditText(
         ),
         shape = getDefaultShape(),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedTextColor = LATheme.colors.body,
-            focusedBorderColor = LATheme.colors.primary,
-            unfocusedBorderColor = LATheme.colors.primary,
+            focusedTextColor = mainColor,//LATheme.colors.body,
+            unfocusedTextColor = mainColor,
+
+            focusedContainerColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+            unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+
+            focusedTrailingIconColor = mainColor,
+            unfocusedTrailingIconColor = mainColor,
+
+            focusedBorderColor = Color.Transparent,
+            unfocusedBorderColor = Color.Transparent,
+
+            focusedPlaceholderColor = mainColor.copy(alpha = 0.6f),
+            unfocusedPlaceholderColor = mainColor.copy(alpha = 0.6f),
+
+            cursorColor = mainColor
         ),
         maxLines = maxLines,
         visualTransformation = visualTransformation,
@@ -67,7 +83,6 @@ fun AppEditText(
                     Icon(
                         imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                         contentDescription = if (isPasswordVisible) "Hide password" else "Show password",
-                        tint = LATheme.colors.body
                     )
                 }
             }
