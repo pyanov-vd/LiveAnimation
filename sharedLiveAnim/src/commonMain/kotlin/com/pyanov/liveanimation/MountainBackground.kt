@@ -3,23 +3,29 @@ package com.pyanov.liveanimation
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import liveanimation.sharedliveanim.generated.resources.Res
+import liveanimation.sharedliveanim.generated.resources.ill_cloud
+import org.jetbrains.compose.resources.painterResource
 
 private const val ANIM_DURATION = 850
 
 @Composable
 fun MountainBackground(
     animateMountainLayers: Boolean,
-    pupilOffsetY: Float
+    pupilOffsetY: Float,
 ) {
-
     // Анимация для заднего слоя (выезжает снизу)
     val backLayerOffsetY by animateFloatAsState(
         targetValue = if (animateMountainLayers) 0f else 2000f, // 2000f - значение для выезда за экран снизу
@@ -74,6 +80,45 @@ fun MountainBackground(
         )
     }
 
+    // Глаза на левой горе заднего слоя
+    Canvas(
+        modifier = Modifier
+            .fillMaxSize()
+            .offset(y = backLayerOffsetY.dp) // Применяем то же смещение по Y, что и к заднему слою
+            .alpha(backLayerAlpha) // И ту же прозрачность
+    ) {
+        val width = size.width
+        val height = size.height
+
+        // Координаты для левой горы заднего слоя
+        val backLayerStartY = height * 0.1f
+        val backLayerHeight = height * 0.4f
+
+        // Примерные координаты для центра глаз на левой горе
+        val eyeCenterX = width * 0.32f // Смещено к центру левой горы
+        val eyeCenterY = backLayerStartY + backLayerHeight * 0.6f // Чуть выше середины горы
+        val eyeSize = backLayerHeight * 0.1f // Уменьшаем размер глаз
+
+        drawEyes(
+            eyeCenterX = eyeCenterX,
+            eyeCenterY = eyeCenterY,
+            eyeSize = eyeSize,
+            pupilOffsetY = pupilOffsetY
+        )
+    }
+
+    // Облако из PNG
+    Image(
+        painter = painterResource(Res.drawable.ill_cloud),
+        contentDescription = "Cloud",
+        modifier = Modifier
+            .size(200.dp)
+            .offset(y = backLayerOffsetY.dp)
+            .alpha(backLayerAlpha)
+            .border(width = 2.dp, color = Color.Red),
+        contentScale = ContentScale.FillWidth
+    )
+
     Canvas(
         modifier = Modifier
             .fillMaxSize()
@@ -105,33 +150,6 @@ fun MountainBackground(
             color = Color(0xFF3b467d),
             layerHeight = height * 0.3f,
             startY = height * 0.3f
-        )
-    }
-
-    // Глаза на левой горе заднего слоя
-    Canvas(
-        modifier = Modifier
-            .fillMaxSize()
-            .offset(y = backLayerOffsetY.dp) // Применяем то же смещение по Y, что и к заднему слою
-            .alpha(backLayerAlpha) // И ту же прозрачность
-    ) {
-        val width = size.width
-        val height = size.height
-
-        // Координаты для левой горы заднего слоя
-        val backLayerStartY = height * 0.1f
-        val backLayerHeight = height * 0.4f
-
-        // Примерные координаты для центра глаз на левой горе
-        val eyeCenterX = width * 0.32f // Смещено к центру левой горы
-        val eyeCenterY = backLayerStartY + backLayerHeight * 0.6f // Чуть выше середины горы
-        val eyeSize = backLayerHeight * 0.1f // Уменьшаем размер глаз
-
-        drawEyes(
-            eyeCenterX = eyeCenterX,
-            eyeCenterY = eyeCenterY,
-            eyeSize = eyeSize,
-            pupilOffsetY = pupilOffsetY
         )
     }
 } 
