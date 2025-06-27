@@ -1,10 +1,11 @@
 package com.pyanov.liveanimation
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.BoxWithConstraints // Added
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -14,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import liveanimation.sharedliveanim.generated.resources.Res
 import liveanimation.sharedliveanim.generated.resources.ill_cloud
@@ -27,7 +27,7 @@ fun MountainBackground(
     animateMountainLayers: Boolean,
     pupilOffsetY: Float,
 ) {
-    BoxWithConstraints { // Added BoxWithConstraints
+    BoxWithConstraints {
         val maxHeightDp = this.maxHeight
 
         val cloudHeightDp = 200.dp // Высота облака
@@ -76,6 +76,16 @@ fun MountainBackground(
             targetValue = if (animateMountainLayers) 1f else 0f,
             animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 350),
             label = "frontLayerAlpha"
+        )
+
+        // Анимация для X-координаты облака
+        val cloudInitialXOffsetDp = -cloudHeightDp - 20.dp // Полностью за левым краем
+        val cloudTargetXOffsetDp = -(cloudHeightDp * 2 / 3) // Целевое положение: 2/3 за краем
+
+        val animatedCloudXOffsetDp by animateDpAsState(
+            targetValue = if (animateMountainLayers) cloudTargetXOffsetDp else cloudInitialXOffsetDp,
+            animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 0), // Синхронно с появлением горы
+            label = "cloudOffsetX"
         )
 
         // Слой задней горы (только форма)
@@ -129,11 +139,11 @@ fun MountainBackground(
             modifier = Modifier
                 .size(cloudHeightDp)
                 .offset(
-                    x = -(cloudHeightDp * 2 / 3), // Две трети за левым краем
-                    // Центрируем облако по рассчитанной Y-координате глаз/облака
-                    y = targetEyeAndCloudCenterYDp - (cloudHeightDp / 2) + backLayerOffsetY.dp
-                )
-                .alpha(backLayerAlpha),
+                    x = animatedCloudXOffsetDp, // Используем анимированное X-смещение
+                    // Y-смещение теперь не зависит от backLayerOffsetY и центрировано по targetEyeAndCloudCenterYDp
+                    y = targetEyeAndCloudCenterYDp - (cloudHeightDp / 2)
+                ),
+                alpha = 0.8f,
             contentScale = ContentScale.FillWidth
         )
 

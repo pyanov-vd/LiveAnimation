@@ -23,7 +23,7 @@ fun AuthInputFields(
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var isPasswordVisible by remember { mutableStateOf(false) }
+    var isPasswordVisible by remember { mutableStateOf(true) }
 
     Column(
         modifier = modifier,
