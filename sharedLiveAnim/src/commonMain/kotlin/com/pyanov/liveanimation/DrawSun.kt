@@ -1,6 +1,8 @@
 package com.pyanov.liveanimation
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -9,58 +11,80 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
+import kotlin.math.cos
+import kotlin.math.sin
+
+private val SUN_AND_RAY_COLOR = Color(0xFFF5D442)
+private val MOUTH_COLOR = Color(0xFF3b467d) //Color.Black
+private const val RAYS_COUNT = 20
+private const val RAYS_LENGTH = 15
 
 @Composable
 fun SunWithEyes(
     modifier: Modifier = Modifier,
-    pupilOffsetY: Float
+    pupilOffsetY: Float,
 ) {
-    Canvas(modifier = modifier) {
-        val sunActualRadiusPx = size.minDimension / 2f
-        val sunDiameterPx = size.minDimension
+    BoxWithConstraints(modifier = modifier) {
+        val sunDiameterPx = constraints.maxWidth.toFloat()
+        val sunActualRadiusPx = sunDiameterPx / 2f
+        val sunCenter = Offset(sunActualRadiusPx, sunActualRadiusPx)
 
-        drawCircle(
-            color = Color(0xFFFFC107),
-            radius = sunActualRadiusPx,
-            center = center
-        )
+        Canvas(modifier = Modifier.fillMaxSize()) {
 
-        val eyeCenterXOnSun = center.x
-        val eyeCenterYOnSun = center.y
-        val sunEyeSizePx = sunActualRadiusPx * 0.45f
+            for (i in 0 until RAYS_COUNT) {
+                val rayLengthPx = if (i % 2 == 0) {
+                    RAYS_LENGTH.dp.toPx()
+                } else {
+                    (RAYS_LENGTH - 5).dp.toPx()
+                }
 
-        drawEyes(
-            eyeCenterX = eyeCenterXOnSun,
-            eyeCenterY = eyeCenterYOnSun - 5.dp.toPx(),
-            eyeSize = sunEyeSizePx,
-            pupilOffsetY = pupilOffsetY
-        )
+                val angle = (2 * kotlin.math.PI / RAYS_COUNT * i).toFloat()
+                val startX = sunCenter.x + sunActualRadiusPx * cos(angle)
+                val startY = sunCenter.y + sunActualRadiusPx * sin(angle)
+                val endX = sunCenter.x + (sunActualRadiusPx + rayLengthPx) * cos(angle)
+                val endY = sunCenter.y + (sunActualRadiusPx + rayLengthPx) * sin(angle)
 
-        val mouthStrokeWidthPx = 1.dp.toPx()
-        val mouthOffsetYFromCenterPx = 20.dp.toPx()
-        val mouthWidthRatio = 0.4f
-        val smileDepthRatio = 0.15f
+                drawLine(
+                    color = SUN_AND_RAY_COLOR,
+                    start = Offset(startX, startY),
+                    end = Offset(endX, endY),
+                    strokeWidth = 3.dp.toPx(),
+                    cap = StrokeCap.Round
+                )
+            }
 
-        val mouthCenterY = center.y + mouthOffsetYFromCenterPx
-        val mouthHalfWidth = (sunDiameterPx * mouthWidthRatio) / 2f
+            drawCircle(
+                color = SUN_AND_RAY_COLOR,
+                radius = sunActualRadiusPx,
+                center = sunCenter
+            )
 
-        val mouthStartX = center.x - mouthHalfWidth
-        val mouthEndX = center.x + mouthHalfWidth
-        val mouthControlX = center.x
-        val mouthControlY = mouthCenterY + (sunDiameterPx * smileDepthRatio)
+            val sunEyeSizePx = sunActualRadiusPx * 0.37f
+            drawEyes(
+                eyeCenterX = sunCenter.x,
+                eyeCenterY = sunCenter.y - 15,
+                eyeSize = sunEyeSizePx,
+                pupilOffsetY = pupilOffsetY
+            )
 
-        val path = Path().apply {
-            moveTo(mouthStartX, mouthCenterY)
-            quadraticTo(
-                mouthControlX, mouthControlY,
-                mouthEndX, mouthCenterY
+            val mouthWidthRatio = 0.4f
+            val smileDepthRatio = 0.15f
+            val mouthOffsetY = 15.dp.toPx()
+            val mouthWidth = sunDiameterPx * mouthWidthRatio
+            val mouthHalfWidth = mouthWidth / 2
+
+            val mouthPath = Path().apply {
+                moveTo(sunCenter.x - mouthHalfWidth, sunCenter.y + mouthOffsetY)
+                quadraticTo(
+                    sunCenter.x, sunCenter.y + mouthOffsetY + (sunDiameterPx * smileDepthRatio),
+                    sunCenter.x + mouthHalfWidth, sunCenter.y + mouthOffsetY
+                )
+            }
+            drawPath(
+                path = mouthPath,
+                color = MOUTH_COLOR,
+                style = Stroke(width = 1.dp.toPx(), cap = StrokeCap.Round)
             )
         }
-
-        drawPath(
-            path = path,
-            color = Color.Black,
-            style = Stroke(width = mouthStrokeWidthPx, cap = StrokeCap.Round)
-        )
     }
 }
