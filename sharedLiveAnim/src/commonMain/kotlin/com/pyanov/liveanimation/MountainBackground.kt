@@ -22,8 +22,9 @@ import liveanimation.sharedliveanim.generated.resources.Res
 import liveanimation.sharedliveanim.generated.resources.ill_cloud
 import org.jetbrains.compose.resources.painterResource
 
-private const val ANIM_DURATION = 1550
+private const val ANIM_DURATION = 850
 private const val CLOUD_ANIM_DURATION = 400
+private const val SUN_RAY_ROTATION_DURATION = 10000 // 10 секунд на полный оборот
 
 @Composable
 fun MountainBackground(
@@ -102,8 +103,7 @@ fun MountainBackground(
         )
 
         val sunInitialXOffsetDp = maxWidthDp
-        val sunTargetXOffsetDp =
-            (maxWidthDp * 2 / 3) - (sunDiameterDp / 2)
+        val sunTargetXOffsetDp = (maxWidthDp * 2 / 3) - (sunDiameterDp / 2)
 
         val animatedSunXOffsetDp by animateDpAsState(
             targetValue = if (animateMountainLayers) sunTargetXOffsetDp else sunInitialXOffsetDp,
@@ -115,8 +115,11 @@ fun MountainBackground(
             modifier = Modifier
                 .size(sunDiameterDp)
                 .align(Alignment.TopStart)
-                .offset(x = animatedSunXOffsetDp, y = 50.dp),
-            pupilOffsetY = pupilOffsetY
+                .offset(
+                    x = animatedSunXOffsetDp,
+                    y = 50.dp
+                ),
+            pupilOffsetY = pupilOffsetY,
         )
 
         Canvas(
@@ -146,14 +149,14 @@ fun MountainBackground(
             val canvasHeightPx = size.height
             val mountainVisualTopPx = canvasHeightPx * mountainVisualTopRatio
             val mountainVisualHeightPx = canvasHeightPx * mountainVisualHeightRatio
-            val eyeCenterYForDrawEyes =
+            val eyeCenterY_forDrawEyes =
                 mountainVisualTopPx + (mountainVisualHeightPx * eyesVerticalPositionOnMountainRatio)
-            val eyeCenterXForDrawEyes = canvasWidthPx * 0.32f
+            val eyeCenterX_forDrawEyes = canvasWidthPx * 0.32f
             val eyeSize = mountainVisualHeightPx * 0.1f
 
             drawEyes(
-                eyeCenterX = eyeCenterXForDrawEyes,
-                eyeCenterY = eyeCenterYForDrawEyes,
+                eyeCenterX = eyeCenterX_forDrawEyes,
+                eyeCenterY = eyeCenterY_forDrawEyes,
                 eyeSize = eyeSize,
                 pupilOffsetY = pupilOffsetY
             )
