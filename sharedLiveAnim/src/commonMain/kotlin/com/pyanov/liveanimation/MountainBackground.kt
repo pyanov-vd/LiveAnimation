@@ -4,7 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.BoxWithConstraints // Added
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import liveanimation.sharedliveanim.generated.resources.Res
 import liveanimation.sharedliveanim.generated.resources.ill_cloud
@@ -26,130 +27,150 @@ fun MountainBackground(
     animateMountainLayers: Boolean,
     pupilOffsetY: Float,
 ) {
-    // Анимация для заднего слоя (выезжает снизу)
-    val backLayerOffsetY by animateFloatAsState(
-        targetValue = if (animateMountainLayers) 0f else 2000f, // 2000f - значение для выезда за экран снизу
-        animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 0),
-        label = "backLayerOffsetY"
-    )
-    val backLayerAlpha by animateFloatAsState(
-        targetValue = if (animateMountainLayers) 1f else 0f,
-        animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 0),
-        label = "backLayerAlpha"
-    )
+    BoxWithConstraints { // Added BoxWithConstraints
+        val maxHeightDp = this.maxHeight
 
-    // Анимация для среднего слоя (выезжает снизу)
-    val middleLayerOffsetY by animateFloatAsState(
-        targetValue = if (animateMountainLayers) 0f else 2000f, // 2000f - значение для выезда за экран снизу
-        animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 200),
-        label = "middleLayerOffsetY"
-    )
-    val middleLayerAlpha by animateFloatAsState(
-        targetValue = if (animateMountainLayers) 1f else 0f,
-        animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 200),
-        label = "middleLayerAlpha"
-    )
+        val cloudHeightDp = 200.dp // Высота облака
 
-    // Анимация для переднего слоя (выезжает снизу)
-    val frontLayerOffsetY by animateFloatAsState(
-        targetValue = if (animateMountainLayers) 0f else 2000f, // 2000f - значение для выезда за экран снизу
-        animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 350),
-        label = "frontLayerOffsetY"
-    )
-    val frontLayerAlpha by animateFloatAsState(
-        targetValue = if (animateMountainLayers) 1f else 0f,
-        animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 350),
-        label = "frontLayerAlpha"
-    )
+        // Коэффициенты для геометрии задней горы и положения глаз
+        val mountainVisualTopRatio = 0.1f        // Верх горы от верха компонента
+        val mountainVisualHeightRatio = 0.4f     // Высота горы относительно высоты компонента
+        val eyesVerticalPositionOnMountainRatio = 0.6f // Положение глаз на горе (0.0 - вершина, 1.0 - основание)
 
-    // Слои гор на горизонте
-    Canvas(
-        modifier = Modifier
-            .fillMaxSize()
-            .offset(y = backLayerOffsetY.dp)
-            .alpha(backLayerAlpha)
-    ) {
-        val width = size.width
-        val height = size.height
-        drawBackMountainLayer(
-            canvasWidth = width,
-            canvasHeight = height,
-            color = Color(0xFFa17598),
-            layerHeight = height * 0.4f,
-            startY = height * 0.1f
+        // Рассчитываем целевую Y-координату для центра глаз и облака в Dp
+        val mountainVisualTopDp = maxHeightDp * mountainVisualTopRatio
+        val mountainVisualHeightDp = maxHeightDp * mountainVisualHeightRatio
+        val targetEyeAndCloudCenterYDp = mountainVisualTopDp + (mountainVisualHeightDp * eyesVerticalPositionOnMountainRatio)
+
+        // Анимация для заднего слоя (выезжает снизу)
+        val backLayerOffsetY by animateFloatAsState(
+            targetValue = if (animateMountainLayers) 0f else 2000f,
+            animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 0),
+            label = "backLayerOffsetY"
         )
-    }
-
-    // Глаза на левой горе заднего слоя
-    Canvas(
-        modifier = Modifier
-            .fillMaxSize()
-            .offset(y = backLayerOffsetY.dp) // Применяем то же смещение по Y, что и к заднему слою
-            .alpha(backLayerAlpha) // И ту же прозрачность
-    ) {
-        val width = size.width
-        val height = size.height
-
-        // Координаты для левой горы заднего слоя
-        val backLayerStartY = height * 0.1f
-        val backLayerHeight = height * 0.4f
-
-        // Примерные координаты для центра глаз на левой горе
-        val eyeCenterX = width * 0.32f // Смещено к центру левой горы
-        val eyeCenterY = backLayerStartY + backLayerHeight * 0.6f // Чуть выше середины горы
-        val eyeSize = backLayerHeight * 0.1f // Уменьшаем размер глаз
-
-        drawEyes(
-            eyeCenterX = eyeCenterX,
-            eyeCenterY = eyeCenterY,
-            eyeSize = eyeSize,
-            pupilOffsetY = pupilOffsetY
+        val backLayerAlpha by animateFloatAsState(
+            targetValue = if (animateMountainLayers) 1f else 0f,
+            animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 0),
+            label = "backLayerAlpha"
         )
-    }
 
-    // Облако из PNG
-    Image(
-        painter = painterResource(Res.drawable.ill_cloud),
-        contentDescription = "Cloud",
-        modifier = Modifier
-            .size(200.dp)
-            .offset(y = backLayerOffsetY.dp)
-            .alpha(backLayerAlpha)
-            .border(width = 2.dp, color = Color.Red),
-        contentScale = ContentScale.FillWidth
-    )
-
-    Canvas(
-        modifier = Modifier
-            .fillMaxSize()
-            .offset(y = middleLayerOffsetY.dp)
-            .alpha(middleLayerAlpha)
-    ) {
-        val width = size.width
-        val height = size.height
-        drawMiddleMountainLayer(
-            canvasWidth = width,
-            canvasHeight = height,
-            color = Color(0xFF575da5),
-            layerHeight = height * 0.35f,
-            startY = height * 0.2f
+        // Анимация для среднего слоя
+        val middleLayerOffsetY by animateFloatAsState(
+            targetValue = if (animateMountainLayers) 0f else 2000f,
+            animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 200),
+            label = "middleLayerOffsetY"
         )
-    }
-
-    Canvas(
-        modifier = Modifier
-            .fillMaxSize()
-            .offset(y = frontLayerOffsetY.dp)
-            .alpha(frontLayerAlpha)
-    ) {
-        val width = size.width
-        val height = size.height
-        drawFrontMountainLayer(
-            canvasWidth = width,
-            canvasHeight = height,
-            color = Color(0xFF3b467d),
-            layerHeight = height * 0.3f,
-            startY = height * 0.3f
+        val middleLayerAlpha by animateFloatAsState(
+            targetValue = if (animateMountainLayers) 1f else 0f,
+            animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 200),
+            label = "middleLayerAlpha"
         )
+
+        // Анимация для переднего слоя
+        val frontLayerOffsetY by animateFloatAsState(
+            targetValue = if (animateMountainLayers) 0f else 2000f,
+            animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 350),
+            label = "frontLayerOffsetY"
+        )
+        val frontLayerAlpha by animateFloatAsState(
+            targetValue = if (animateMountainLayers) 1f else 0f,
+            animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 350),
+            label = "frontLayerAlpha"
+        )
+
+        // Слой задней горы (только форма)
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(y = backLayerOffsetY.dp)
+                .alpha(backLayerAlpha)
+        ) {
+            val width = size.width
+            val height = size.height // Соответствует maxHeightDp в пикселях
+            drawBackMountainLayer(
+                canvasWidth = width,
+                canvasHeight = height, // Используем высоту Canvas
+                color = Color(0xFFa17598),
+                layerHeight = height * mountainVisualHeightRatio, // Используем тот же коэффициент
+                startY = height * mountainVisualTopRatio          // Используем тот же коэффициент
+            )
+        }
+
+        // Глаза на левой горе заднего слоя
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(y = backLayerOffsetY.dp)
+                .alpha(backLayerAlpha)
+        ) {
+            val canvasWidthPx = size.width
+            val canvasHeightPx = size.height // Соответствует maxHeightDp в пикселях
+
+            // Рассчитываем Y-координату центра глаз в пикселях, используя те же коэффициенты
+            val mountainVisualTopPx = canvasHeightPx * mountainVisualTopRatio
+            val mountainVisualHeightPx = canvasHeightPx * mountainVisualHeightRatio
+            val eyeCenterY_forDrawEyes = mountainVisualTopPx + (mountainVisualHeightPx * eyesVerticalPositionOnMountainRatio)
+
+            val eyeCenterX = canvasWidthPx * 0.32f // Примерное положение по X
+            val eyeSize = mountainVisualHeightPx * 0.1f // Размер глаз относительно высоты горы
+
+            drawEyes(
+                eyeCenterX = eyeCenterX,
+                eyeCenterY = eyeCenterY_forDrawEyes,
+                eyeSize = eyeSize,
+                pupilOffsetY = pupilOffsetY
+            )
+        }
+
+        // Облако из PNG
+        Image(
+            painter = painterResource(Res.drawable.ill_cloud),
+            contentDescription = "Cloud",
+            modifier = Modifier
+                .size(cloudHeightDp)
+                .offset(
+                    x = -(cloudHeightDp * 2 / 3), // Две трети за левым краем
+                    // Центрируем облако по рассчитанной Y-координате глаз/облака
+                    y = targetEyeAndCloudCenterYDp - (cloudHeightDp / 2) + backLayerOffsetY.dp
+                )
+                .alpha(backLayerAlpha),
+            contentScale = ContentScale.FillWidth
+        )
+
+        // Средний слой гор
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(y = middleLayerOffsetY.dp)
+                .alpha(middleLayerAlpha)
+        ) {
+            val width = size.width
+            val height = size.height
+            drawMiddleMountainLayer(
+                canvasWidth = width,
+                canvasHeight = height,
+                color = Color(0xFF575da5),
+                layerHeight = height * 0.35f, // Эти коэффициенты могут быть другими
+                startY = height * 0.2f
+            )
+        }
+
+        // Передний слой гор
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(y = frontLayerOffsetY.dp)
+                .alpha(frontLayerAlpha)
+        ) {
+            val width = size.width
+            val height = size.height
+            drawFrontMountainLayer(
+                canvasWidth = width,
+                canvasHeight = height,
+                color = Color(0xFF3b467d),
+                layerHeight = height * 0.3f, // Эти коэффициенты могут быть другими
+                startY = height * 0.3f
+            )
+        }
     }
-} 
+}
