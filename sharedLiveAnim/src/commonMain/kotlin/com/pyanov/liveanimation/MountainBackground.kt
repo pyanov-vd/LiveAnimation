@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -20,20 +21,21 @@ import liveanimation.sharedliveanim.generated.resources.Res
 import liveanimation.sharedliveanim.generated.resources.ill_cloud
 import org.jetbrains.compose.resources.painterResource
 
-private const val ANIM_DURATION = 850 // Длительность для основных анимаций
-private const val CLOUD_ANIM_DURATION = 400 // Длительность для анимации облака при смене видимости пароля
+private const val ANIM_DURATION = 850
+private const val CLOUD_ANIM_DURATION = 400
 
 @Composable
 fun MountainBackground(
     animateMountainLayers: Boolean,
     pupilOffsetY: Float,
-    isPasswordActuallyVisible: Boolean, // Новый параметр
+    isPasswordActuallyVisible: Boolean,
 ) {
     BoxWithConstraints {
         val maxHeightDp = this.maxHeight
-        val maxWidthDp = this.maxWidth // Получаем максимальную ширину
+        val maxWidthDp = this.maxWidth
 
-        val cloudHeightDp = 200.dp // Высота облака (предполагаем, что ширина примерно такая же для расчетов)
+        val cloudHeightDp = 200.dp
+        val sunDiameterDp = 100.dp
 
         val mountainVisualTopRatio = 0.1f
         val mountainVisualHeightRatio = 0.4f
@@ -76,37 +78,40 @@ fun MountainBackground(
             label = "frontLayerAlpha"
         )
 
-        // Логика для X-координаты облака
-        val cloudInitialXOffsetDp = -cloudHeightDp - 20.dp // Полностью за левым краем (для стартовой анимации)
-
-        // Позиция облака, когда пароль ВИДЕН (стартовая "парковочная" позиция)
+        val cloudInitialXOffsetDp = -cloudHeightDp - 20.dp
         val cloudPositionWhenPasswordVisibleDp = -(cloudHeightDp * 2 / 3)
-
-        // Позиция облака, когда пароль СКРЫТ (центр облака на уровне центра X глаз)
-        // Глаза рисуются в Canvas с eyeCenterX = canvasWidthPx * 0.32f.
-        // canvasWidthPx соответствует maxWidthDp родительского BoxWithConstraints.
         val eyeCenterXInDp = maxWidthDp * 0.32f
-        val cloudPositionWhenPasswordHiddenDp = eyeCenterXInDp - (cloudHeightDp / 2) // Левый край облака для центрирования
+        val cloudPositionWhenPasswordHiddenDp = eyeCenterXInDp - (cloudHeightDp / 2)
 
         val targetCloudXOffsetDp = if (!animateMountainLayers) {
-            cloudInitialXOffsetDp // 1. Начальное состояние: за экраном (перед стартовой анимацией)
+            cloudInitialXOffsetDp
         } else {
-            // 2. После стартовой анимации, позиция зависит от видимости пароля
             if (isPasswordActuallyVisible) {
-                cloudPositionWhenPasswordVisibleDp // Пароль виден
+                cloudPositionWhenPasswordVisibleDp
             } else {
-                cloudPositionWhenPasswordHiddenDp // Пароль скрыт
+                cloudPositionWhenPasswordHiddenDp
             }
         }
 
         val animatedCloudXOffsetDp by animateDpAsState(
             targetValue = targetCloudXOffsetDp,
-            // Анимация для смены видимости пароля может быть быстрее
             animationSpec = tween(durationMillis = if (animateMountainLayers) CLOUD_ANIM_DURATION else ANIM_DURATION),
             label = "cloudOffsetX"
         )
 
-        Canvas( // Задний слой горы
+        SunWithEyes(
+            modifier = Modifier
+                .size(sunDiameterDp)
+                .align(Alignment.TopStart)
+                .offset(
+                    x = (maxWidthDp * 2 / 3) - (sunDiameterDp / 2),
+                    y = 50.dp + backLayerOffsetY.dp
+                )
+                .alpha(backLayerAlpha),
+            pupilOffsetY = pupilOffsetY
+        )
+
+        Canvas(
             modifier = Modifier
                 .fillMaxSize()
                 .offset(y = backLayerOffsetY.dp)
@@ -123,7 +128,7 @@ fun MountainBackground(
             )
         }
 
-        Canvas( // Глаза
+        Canvas(
             modifier = Modifier
                 .fillMaxSize()
                 .offset(y = backLayerOffsetY.dp)
@@ -145,7 +150,7 @@ fun MountainBackground(
             )
         }
 
-        Image( // Облако
+        Image(
             painter = painterResource(Res.drawable.ill_cloud),
             contentDescription = "Cloud",
             modifier = Modifier
@@ -154,11 +159,11 @@ fun MountainBackground(
                     x = animatedCloudXOffsetDp,
                     y = targetEyeAndCloudCenterYDp - (cloudHeightDp / 2)
                 ),
-            alpha = 0.97f, // Оставил альфу, если она нужна. Если нет - можно убрать.
+            alpha = 0.97f,
             contentScale = ContentScale.FillWidth
         )
 
-        Canvas( // Средний слой гор
+        Canvas(
             modifier = Modifier
                 .fillMaxSize()
                 .offset(y = middleLayerOffsetY.dp)
@@ -175,7 +180,7 @@ fun MountainBackground(
             )
         }
 
-        Canvas( // Передний слой гор
+        Canvas(
             modifier = Modifier
                 .fillMaxSize()
                 .offset(y = frontLayerOffsetY.dp)
