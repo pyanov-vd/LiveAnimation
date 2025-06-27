@@ -1,5 +1,6 @@
 package com.pyanov.liveanimation
 
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -21,7 +22,7 @@ import liveanimation.sharedliveanim.generated.resources.Res
 import liveanimation.sharedliveanim.generated.resources.ill_cloud
 import org.jetbrains.compose.resources.painterResource
 
-private const val ANIM_DURATION = 850
+private const val ANIM_DURATION = 1550
 private const val CLOUD_ANIM_DURATION = 400
 
 @Composable
@@ -43,7 +44,8 @@ fun MountainBackground(
 
         val mountainVisualTopDp = maxHeightDp * mountainVisualTopRatio
         val mountainVisualHeightDp = maxHeightDp * mountainVisualHeightRatio
-        val targetEyeAndCloudCenterYDp = mountainVisualTopDp + (mountainVisualHeightDp * eyesVerticalPositionOnMountainRatio)
+        val targetEyeAndCloudCenterYDp =
+            mountainVisualTopDp + (mountainVisualHeightDp * eyesVerticalPositionOnMountainRatio)
 
         val backLayerOffsetY by animateFloatAsState(
             targetValue = if (animateMountainLayers) 0f else 2000f,
@@ -99,15 +101,21 @@ fun MountainBackground(
             label = "cloudOffsetX"
         )
 
+        val sunInitialXOffsetDp = maxWidthDp
+        val sunTargetXOffsetDp =
+            (maxWidthDp * 2 / 3) - (sunDiameterDp / 2)
+
+        val animatedSunXOffsetDp by animateDpAsState(
+            targetValue = if (animateMountainLayers) sunTargetXOffsetDp else sunInitialXOffsetDp,
+            animationSpec = tween(durationMillis = ANIM_DURATION, easing = FastOutSlowInEasing),
+            label = "sunXOffset"
+        )
+
         SunWithEyes(
             modifier = Modifier
                 .size(sunDiameterDp)
                 .align(Alignment.TopStart)
-                .offset(
-                    x = (maxWidthDp * 2 / 3) - (sunDiameterDp / 2),
-                    y = 50.dp + backLayerOffsetY.dp
-                )
-                .alpha(backLayerAlpha),
+                .offset(x = animatedSunXOffsetDp, y = 50.dp),
             pupilOffsetY = pupilOffsetY
         )
 
@@ -138,13 +146,14 @@ fun MountainBackground(
             val canvasHeightPx = size.height
             val mountainVisualTopPx = canvasHeightPx * mountainVisualTopRatio
             val mountainVisualHeightPx = canvasHeightPx * mountainVisualHeightRatio
-            val eyeCenterY_forDrawEyes = mountainVisualTopPx + (mountainVisualHeightPx * eyesVerticalPositionOnMountainRatio)
-            val eyeCenterX_forDrawEyes = canvasWidthPx * 0.32f
+            val eyeCenterYForDrawEyes =
+                mountainVisualTopPx + (mountainVisualHeightPx * eyesVerticalPositionOnMountainRatio)
+            val eyeCenterXForDrawEyes = canvasWidthPx * 0.32f
             val eyeSize = mountainVisualHeightPx * 0.1f
 
             drawEyes(
-                eyeCenterX = eyeCenterX_forDrawEyes,
-                eyeCenterY = eyeCenterY_forDrawEyes,
+                eyeCenterX = eyeCenterXForDrawEyes,
+                eyeCenterY = eyeCenterYForDrawEyes,
                 eyeSize = eyeSize,
                 pupilOffsetY = pupilOffsetY
             )
