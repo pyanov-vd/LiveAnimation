@@ -33,6 +33,7 @@ fun MountainAnim(
     val isKeyboardVisible = WindowInsets.ime.getBottom(density) > 0
 
     var animateAuthFields by remember { mutableStateOf(isAnimatedAlready) }
+    var isPasswordVisible by remember { mutableStateOf(true) } // State for password visibility
 
     LaunchedEffect(Unit) {
         animateAuthFields = true
@@ -73,7 +74,8 @@ fun MountainAnim(
         // Фон с горами и глазами
         MountainBackground(
             animateMountainLayers = animateAuthFields,
-            pupilOffsetY = pupilOffsetY
+            pupilOffsetY = pupilOffsetY,
+            isPasswordActuallyVisible = isPasswordVisible // Pass the state here
         )
 
         // Поля ввода
@@ -84,7 +86,9 @@ fun MountainAnim(
                 .offset(y = 56.dp)
                 .align(Alignment.Center)
                 .scale(authInputFieldsScale)
-                .alpha(authInputFieldsAlpha)
+                .alpha(authInputFieldsAlpha),
+            isPasswordVisible = isPasswordVisible, // Pass the state here
+            onPasswordVisibilityChange = { isPasswordVisible = it } // Pass the callback here
         )
     }
-} 
+}
