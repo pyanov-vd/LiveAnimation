@@ -24,7 +24,6 @@ import org.jetbrains.compose.resources.painterResource
 
 private const val ANIM_DURATION = 850
 private const val CLOUD_ANIM_DURATION = 400
-private const val SUN_RAY_ROTATION_DURATION = 10000 // 10 секунд на полный оборот
 
 @Composable
 fun MountainBackground(
@@ -111,7 +110,7 @@ fun MountainBackground(
             label = "sunXOffset"
         )
 
-        SunWithEyes(
+        DrawSun(
             modifier = Modifier
                 .size(sunDiameterDp)
                 .align(Alignment.TopStart)

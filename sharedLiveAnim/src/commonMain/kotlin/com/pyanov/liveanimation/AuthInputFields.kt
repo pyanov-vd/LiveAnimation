@@ -20,12 +20,11 @@ import com.pyanov.liveanimation.designSystem.controlls.AppEditText
 @Composable
 fun AuthInputFields(
     modifier: Modifier,
-    isPasswordVisible: Boolean, // Принимаем состояние снаружи
-    onPasswordVisibilityChange: (Boolean) -> Unit, // Лямбда для сообщения об изменении
+    isPasswordVisible: Boolean,
+    onPasswordVisibilityChange: (Boolean) -> Unit,
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    // var isPasswordVisible by remember { mutableStateOf(true) } // Удаляем внутреннее состояние
 
     Column(
         modifier = modifier,
@@ -50,8 +49,8 @@ fun AuthInputFields(
             keyboardType = KeyboardType.Password,
             visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             onValueChange = { password = it },
-            isPasswordVisible = isPasswordVisible, // Используем внешний параметр
-            onPasswordVisibilityChange = onPasswordVisibilityChange // Используем внешнюю лямбду
+            isPasswordVisible = isPasswordVisible,
+            onPasswordVisibilityChange = onPasswordVisibilityChange
         )
     }
 }

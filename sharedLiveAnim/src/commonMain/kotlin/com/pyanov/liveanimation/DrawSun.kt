@@ -6,11 +6,15 @@ import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -18,13 +22,16 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
+import liveanimation.sharedliveanim.generated.resources.Res
+import liveanimation.sharedliveanim.generated.resources.ill_sunglasses
+import org.jetbrains.compose.resources.painterResource
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
 private val SUN_AND_RAY_COLOR = Color(0xFFF5D442)
 private val MOUTH_COLOR = Color(0xFF3b467d)
-private const val RAYS_COUNT = 20
+private const val RAYS_COUNT = 24
 private const val RAYS_LENGTH_DP = 15
 private const val RAY_STROKE_WIDTH_DP = 3
 private const val MOUTH_WIDTH_RATIO = 0.4f
@@ -33,8 +40,11 @@ private const val MOUTH_OFFSET_Y_DP = 20
 private const val SUN_EYE_SIZE_RATIO = 0.35f
 private const val SUN_RAY_ROTATION_DURATION_MS = 30 * 1000
 
+private val SUNGLASSES_SIZE = 60.dp
+private val EYES_AND_SUNGLASSES_OFFSET_Y = (-3).dp
+
 @Composable
-fun SunWithEyes(
+fun DrawSun(
     modifier: Modifier = Modifier,
     pupilOffsetY: Float
 ) {
@@ -58,11 +68,15 @@ fun SunWithEyes(
         val sunCenter = Offset(sunActualRadiusPx, sunActualRadiusPx)
 
         Canvas(modifier = Modifier.fillMaxSize()) {
-            val rayLengthPx = RAYS_LENGTH_DP.dp.toPx()
             val rayStrokeWidthPx = RAY_STROKE_WIDTH_DP.dp.toPx()
             val overallRotationRad = toRadians(rotationAngle.value)
 
             for (i in 0 until RAYS_COUNT) {
+                val rayLengthPx = if (i % 2 == 0) {
+                    RAYS_LENGTH_DP.dp.toPx()
+                } else {
+                    (RAYS_LENGTH_DP - 5).dp.toPx()
+                }
                 val baseAngleRad = (2 * PI / RAYS_COUNT * i).toFloat()
                 val currentAngleRad = baseAngleRad + overallRotationRad
 
@@ -89,7 +103,7 @@ fun SunWithEyes(
             val sunEyeSizePx = sunActualRadiusPx * SUN_EYE_SIZE_RATIO
             drawEyes(
                 eyeCenterX = sunCenter.x,
-                eyeCenterY = sunCenter.y,
+                eyeCenterY = sunCenter.y + EYES_AND_SUNGLASSES_OFFSET_Y.toPx(),
                 eyeSize = sunEyeSizePx,
                 pupilOffsetY = pupilOffsetY
             )
@@ -111,6 +125,15 @@ fun SunWithEyes(
                 style = Stroke(width = 1.dp.toPx(), cap = StrokeCap.Round)
             )
         }
+
+        Image(
+            painter = painterResource(Res.drawable.ill_sunglasses),
+            contentDescription = "sunglasses",
+            modifier = Modifier
+                .size(SUNGLASSES_SIZE)
+                .align(Alignment.Center)
+                .offset(y = EYES_AND_SUNGLASSES_OFFSET_Y)
+        )
     }
 }
 
