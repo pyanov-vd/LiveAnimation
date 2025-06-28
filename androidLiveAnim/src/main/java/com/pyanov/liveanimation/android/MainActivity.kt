@@ -24,7 +24,8 @@ class MainActivity : ComponentActivity() {
 fun DefaultPreview() {
     LATheme {
         MountainAnim(
-            isAnimatedAlready = true
+            isAnimatedAlready = true,
+            passwordPreviewVisibility = true
         )
     }
 }

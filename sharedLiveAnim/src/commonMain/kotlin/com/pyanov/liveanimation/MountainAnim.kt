@@ -18,22 +18,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.scale
 
 @Composable
 fun MountainAnim(
-    isAnimatedAlready: Boolean = false
+    isAnimatedAlready: Boolean = false,
+    passwordPreviewVisibility: Boolean = true,
 ) {
     val density = LocalDensity.current
     val isKeyboardVisible = WindowInsets.ime.getBottom(density) > 0
 
     var animateAuthFields by remember { mutableStateOf(isAnimatedAlready) }
-    var isPasswordVisible by remember { mutableStateOf(true) } // State for password visibility
+    var isPasswordVisible by remember { mutableStateOf(passwordPreviewVisibility) }
 
     LaunchedEffect(Unit) {
         animateAuthFields = true
