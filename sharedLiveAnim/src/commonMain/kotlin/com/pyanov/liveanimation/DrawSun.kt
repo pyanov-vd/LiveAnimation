@@ -3,6 +3,8 @@ package com.pyanov.liveanimation
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -13,9 +15,11 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -42,11 +46,13 @@ private const val SUN_RAY_ROTATION_DURATION_MS = 30 * 1000
 
 private val SUNGLASSES_SIZE = 60.dp
 private val EYES_AND_SUNGLASSES_OFFSET_Y = (-3).dp
+private val EYES_AND_SUNGLASSES_INVISIBLE_OFFSET_Y = (-10).dp
 
 @Composable
 fun DrawSun(
     modifier: Modifier = Modifier,
-    pupilOffsetY: Float
+    pupilOffsetY: Float,
+    isPasswordActuallyVisible: Boolean,
 ) {
     val rotationAngle = remember { Animatable(0f) }
     LaunchedEffect(Unit) {
@@ -61,6 +67,19 @@ fun DrawSun(
             )
         )
     }
+
+    // Анимация смещения очков
+    val sunglassesOffsetY by animateDpAsState(
+        targetValue = if (isPasswordActuallyVisible) EYES_AND_SUNGLASSES_INVISIBLE_OFFSET_Y else EYES_AND_SUNGLASSES_OFFSET_Y,
+        animationSpec = tween(durationMillis = 300),
+        label = "sunglassesOffset"
+    )
+
+    val sunglassesAlpha by animateFloatAsState(
+        targetValue = if (isPasswordActuallyVisible) 0f else 1f,
+        animationSpec = tween(durationMillis = 300),
+        label = "sunglassesAlpha"
+    )
 
     BoxWithConstraints(modifier = modifier) {
         val sunDiameterPx = constraints.maxWidth.toFloat()
@@ -103,7 +122,7 @@ fun DrawSun(
             val sunEyeSizePx = sunActualRadiusPx * SUN_EYE_SIZE_RATIO
             drawEyes(
                 eyeCenterX = sunCenter.x,
-                eyeCenterY = sunCenter.y + EYES_AND_SUNGLASSES_OFFSET_Y.toPx(),
+                eyeCenterY = sunCenter.y + EYES_AND_SUNGLASSES_OFFSET_Y.value,
                 eyeSize = sunEyeSizePx,
                 pupilOffsetY = pupilOffsetY
             )
@@ -132,7 +151,8 @@ fun DrawSun(
             modifier = Modifier
                 .size(SUNGLASSES_SIZE)
                 .align(Alignment.Center)
-                .offset(y = EYES_AND_SUNGLASSES_OFFSET_Y)
+                .offset(y = sunglassesOffsetY)
+                .alpha(sunglassesAlpha)
         )
     }
 }

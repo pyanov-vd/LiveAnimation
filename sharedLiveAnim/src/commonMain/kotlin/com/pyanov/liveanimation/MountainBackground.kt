@@ -119,6 +119,7 @@ fun MountainBackground(
                     y = 50.dp
                 ),
             pupilOffsetY = pupilOffsetY,
+            isPasswordActuallyVisible = isPasswordActuallyVisible
         )
 
         Canvas(
@@ -148,14 +149,14 @@ fun MountainBackground(
             val canvasHeightPx = size.height
             val mountainVisualTopPx = canvasHeightPx * mountainVisualTopRatio
             val mountainVisualHeightPx = canvasHeightPx * mountainVisualHeightRatio
-            val eyeCenterY_forDrawEyes =
+            val eyeCenterYForDrawEyes =
                 mountainVisualTopPx + (mountainVisualHeightPx * eyesVerticalPositionOnMountainRatio)
-            val eyeCenterX_forDrawEyes = canvasWidthPx * 0.32f
+            val eyeCenterXForDrawEyes = canvasWidthPx * 0.32f
             val eyeSize = mountainVisualHeightPx * 0.1f
 
             drawEyes(
-                eyeCenterX = eyeCenterX_forDrawEyes,
-                eyeCenterY = eyeCenterY_forDrawEyes,
+                eyeCenterX = eyeCenterXForDrawEyes,
+                eyeCenterY = eyeCenterYForDrawEyes,
                 eyeSize = eyeSize,
                 pupilOffsetY = pupilOffsetY
             )
