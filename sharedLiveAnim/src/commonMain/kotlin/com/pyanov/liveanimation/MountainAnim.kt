@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 
 @Composable
 fun MountainAnim(
@@ -37,6 +38,7 @@ fun MountainAnim(
     var isPasswordVisible by remember { mutableStateOf(passwordPreviewVisibility) }
 
     LaunchedEffect(Unit) {
+        delay(50) //хак для того, чтобы отображалась анимация на ios
         animateAuthFields = true
     }
 
