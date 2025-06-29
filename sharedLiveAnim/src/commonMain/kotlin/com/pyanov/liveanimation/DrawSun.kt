@@ -119,15 +119,15 @@ fun DrawSun(
                 center = sunCenter
             )
 
-            val sunEyeSizePx = sunActualRadiusPx * SUN_EYE_SIZE_RATIO
+            /*val sunEyeSizePx = sunActualRadiusPx * SUN_EYE_SIZE_RATIO
             drawEyes(
                 eyeCenterX = sunCenter.x,
                 eyeCenterY = sunCenter.y + EYES_AND_SUNGLASSES_OFFSET_Y.value,
                 eyeSize = sunEyeSizePx,
                 pupilOffsetY = pupilOffsetY
-            )
+            )*/
 
-            val mouthOffsetYPx = MOUTH_OFFSET_Y_DP.dp.toPx()
+            /*val mouthOffsetYPx = MOUTH_OFFSET_Y_DP.dp.toPx()
             val mouthWidth = sunDiameterPx * MOUTH_WIDTH_RATIO
             val mouthHalfWidth = mouthWidth / 2
 
@@ -142,10 +142,10 @@ fun DrawSun(
                 path = mouthPath,
                 color = MOUTH_COLOR,
                 style = Stroke(width = 1.dp.toPx(), cap = StrokeCap.Round)
-            )
+            )*/
         }
 
-        Image(
+        /*Image(
             painter = painterResource(Res.drawable.ill_sunglasses),
             contentDescription = "sunglasses",
             modifier = Modifier
@@ -153,7 +153,7 @@ fun DrawSun(
                 .align(Alignment.Center)
                 .offset(y = sunglassesOffsetY)
                 .alpha(sunglassesAlpha)
-        )
+        )*/
     }
 }
 

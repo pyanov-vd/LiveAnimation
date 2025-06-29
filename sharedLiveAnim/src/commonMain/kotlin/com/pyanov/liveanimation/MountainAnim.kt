@@ -44,7 +44,7 @@ fun MountainAnim(
 
     // Анимация смещения зрачков
     val pupilOffsetY by animateFloatAsState(
-        targetValue = if (isKeyboardVisible) 10f else 0f,
+        targetValue = if (isKeyboardVisible) 20f else 0f,
         animationSpec = tween(durationMillis = 300),
         label = "pupilOffset"
     )
@@ -86,7 +86,7 @@ fun MountainAnim(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(24.dp)
-                .offset(y = 56.dp)
+                .offset(y = 26.dp)
                 .align(Alignment.Center)
                 .scale(authInputFieldsScale)
                 .alpha(authInputFieldsAlpha),

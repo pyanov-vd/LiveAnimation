@@ -25,7 +25,7 @@ fun DefaultPreview() {
     LATheme {
         MountainAnim(
             isAnimatedAlready = true,
-            passwordPreviewVisibility = true
+            passwordPreviewVisibility = false
         )
     }
 }
