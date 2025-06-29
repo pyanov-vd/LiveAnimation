@@ -128,9 +128,7 @@ fun MountainBackground(
                 .offset(
                     x = animatedSunXOffsetDp,
                     y = 50.dp
-                ),
-            pupilOffsetY = pupilOffsetY,
-            isPasswordActuallyVisible = isPasswordActuallyVisible
+                )
         )
 
         val configuration = LocalWindowInfo.current
