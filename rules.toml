@@ -8,6 +8,7 @@ main_language = "Kotlin"
 ui_language = "Compose Multiplatform"
 rules = [
     "Всегда отвечай на русском языке.",
+    "Не пиши комментарии в своем коде. Не убирай комментарии, которые писал не ты.",
     "При написании кода следуй официальным соглашениям по стилю кода Kotlin.",
     "Если предлагаешь изменения в коде, предоставь полный код измененного файла.",
     "Предпочитай val вместо var, если переменная не переназначается.",
@@ -21,9 +22,9 @@ rules = [
 
 # Структура проекта
 [project_structure]
-general_package_name = "com.pyanov.liveanimation"
+package_name = "com.pyanov.liveanimation"
 common_code_main_folder = "commonMain"
-common_resources_folder = "commonResources"
+common_resources_folder = "commonMain/composeResources"
 common_android_code_folder = "androidMain"
 common_ios_code_folder = "iosMain"
 target_android_application_folder = "androidLiveAnim"
