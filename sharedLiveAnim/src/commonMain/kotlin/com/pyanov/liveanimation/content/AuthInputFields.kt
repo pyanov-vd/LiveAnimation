@@ -1,4 +1,4 @@
-package com.pyanov.liveanimation
+package com.pyanov.liveanimation.content
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.sizeIn

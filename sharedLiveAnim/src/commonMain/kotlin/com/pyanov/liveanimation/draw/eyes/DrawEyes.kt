@@ -1,4 +1,4 @@
-package com.pyanov.liveanimation
+package com.pyanov.liveanimation.draw.eyes
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color

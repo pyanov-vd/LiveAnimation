@@ -1,4 +1,4 @@
-package com.pyanov.liveanimation
+package com.pyanov.liveanimation.content
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -20,10 +20,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.pyanov.liveanimation.mountains.BackMountains
-import com.pyanov.liveanimation.mountains.FrontMountains
-import com.pyanov.liveanimation.mountains.MiddleMountains
-import com.pyanov.liveanimation.mountains.drawMountainLayer
+import com.pyanov.liveanimation.draw.eyes.drawEyes
+import com.pyanov.liveanimation.draw.mountains.BackMountains
+import com.pyanov.liveanimation.draw.mountains.FrontMountains
+import com.pyanov.liveanimation.draw.mountains.MiddleMountains
+import com.pyanov.liveanimation.draw.mountains.drawMountainLayer
+import com.pyanov.liveanimation.draw.sun.DrawSun
 import liveanimation.sharedliveanim.generated.resources.Res
 import liveanimation.sharedliveanim.generated.resources.ill_cloud
 import liveanimation.sharedliveanim.generated.resources.ill_sunglasses

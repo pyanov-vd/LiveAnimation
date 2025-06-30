@@ -1,4 +1,4 @@
-package com.pyanov.liveanimation
+package com.pyanov.liveanimation.content
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 
 @Composable
-fun MountainAnim(
+fun LoginScreen(
     isAnimatedAlready: Boolean = false,
     passwordPreviewVisibility: Boolean = true,
 ) {

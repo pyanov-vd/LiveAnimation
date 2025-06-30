@@ -1,4 +1,4 @@
-package com.pyanov.liveanimation
+package com.pyanov.liveanimation.draw
 
 import kotlin.math.PI
 

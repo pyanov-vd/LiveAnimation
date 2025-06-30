@@ -1,4 +1,4 @@
-package com.pyanov.liveanimation.mountains
+package com.pyanov.liveanimation.draw.mountains
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path

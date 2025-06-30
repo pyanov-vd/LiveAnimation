@@ -1,4 +1,4 @@
-package com.pyanov.liveanimation.mountains
+package com.pyanov.liveanimation.draw.mountains
 
 /**
  * Класс описывает гору. Каждая гора состоит из списка кривых Бизье
