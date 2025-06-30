@@ -20,9 +20,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.pyanov.liveanimation.mountains.drawBackMountainLayer
-import com.pyanov.liveanimation.mountains.drawFrontMountainLayer
-import com.pyanov.liveanimation.mountains.drawMiddleMountainLayer
+import com.pyanov.liveanimation.mountains.BackMountains
+import com.pyanov.liveanimation.mountains.FrontMountains
+import com.pyanov.liveanimation.mountains.MiddleMountains
+import com.pyanov.liveanimation.mountains.drawMountainLayer
 import liveanimation.sharedliveanim.generated.resources.Res
 import liveanimation.sharedliveanim.generated.resources.ill_cloud
 import liveanimation.sharedliveanim.generated.resources.ill_sunglasses
@@ -154,12 +155,13 @@ fun MountainBackground(
         ) {
             val width = size.width
             val height = size.height
-            drawBackMountainLayer(
+            drawMountainLayer(
                 canvasWidth = width,
                 canvasHeight = height,
                 color = Color(0xFFa17598),
                 layerHeight = height * mountainVisualHeightRatio,
-                startY = height * mountainVisualTopRatio
+                startY = height * mountainVisualTopRatio,
+                mountains = BackMountains
             )
         }
 
@@ -207,12 +209,13 @@ fun MountainBackground(
         ) {
             val width = size.width
             val height = size.height
-            drawMiddleMountainLayer(
+            drawMountainLayer(
                 canvasWidth = width,
                 canvasHeight = height,
                 color = Color(0xFF575da5),
                 layerHeight = height * 0.35f,
-                startY = height * 0.2f
+                startY = height * 0.2f,
+                mountains = MiddleMountains
             )
         }
         Canvas(
@@ -269,12 +272,13 @@ fun MountainBackground(
         ) {
             val width = size.width
             val height = size.height
-            drawFrontMountainLayer(
+            drawMountainLayer(
                 canvasWidth = width,
                 canvasHeight = height,
                 color = Color(0xFF3b467d),
                 layerHeight = height * 0.3f,
-                startY = height * 0.3f
+                startY = height * 0.3f,
+                mountains = FrontMountains
             )
         }
     }
