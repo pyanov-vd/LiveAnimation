@@ -6,7 +6,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -19,15 +18,15 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.text.font.FontVariation.width
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.pyanov.liveanimation.designSystem.LATheme
+import com.pyanov.liveanimation.mountains.drawBackMountainLayer
+import com.pyanov.liveanimation.mountains.drawFrontMountainLayer
+import com.pyanov.liveanimation.mountains.drawMiddleMountainLayer
 import liveanimation.sharedliveanim.generated.resources.Res
 import liveanimation.sharedliveanim.generated.resources.ill_cloud
 import liveanimation.sharedliveanim.generated.resources.ill_sunglasses
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private const val ANIM_DURATION = 850
 private const val CLOUD_ANIM_DURATION = 400

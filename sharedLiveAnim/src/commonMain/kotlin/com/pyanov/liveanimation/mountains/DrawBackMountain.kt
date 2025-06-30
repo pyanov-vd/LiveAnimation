@@ -1,10 +1,8 @@
-package com.pyanov.liveanimation
+package com.pyanov.liveanimation.mountains
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import kotlin.math.PI
-import kotlin.math.sin
 
 fun DrawScope.drawBackMountainLayer(
     canvasWidth: Float,

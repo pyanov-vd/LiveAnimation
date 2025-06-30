@@ -1,12 +1,10 @@
-package com.pyanov.liveanimation
+package com.pyanov.liveanimation.mountains
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import kotlin.math.PI
-import kotlin.math.sin
 
-fun DrawScope.drawFrontMountainLayer(
+fun DrawScope.drawMiddleMountainLayer(
     canvasWidth: Float,
     canvasHeight: Float,
     color: Color,
@@ -17,22 +15,22 @@ fun DrawScope.drawFrontMountainLayer(
         moveTo(0f, canvasHeight)
         lineTo(0f, startY + layerHeight)
 
-        val peakX = canvasWidth * 0.3f // Смещаем пик влево
+        val peakX = canvasWidth * 0.7f // Смещаем пик вправо
         val peakY = startY + layerHeight * 0.4f
 
         cubicTo(
-            x1 = canvasWidth * 0.05f,
-            y1 = startY + layerHeight * 0.7f,
-            x2 = canvasWidth * 0.15f,
+            x1 = canvasWidth * 0.4f,
+            y1 = startY + layerHeight * 0.9f,
+            x2 = canvasWidth * 0.6f,
             y2 = peakY,
             x3 = peakX,
             y3 = peakY
         )
         cubicTo(
-            x1 = canvasWidth * 0.4f,
+            x1 = canvasWidth * 0.8f,
             y1 = peakY,
-            x2 = canvasWidth * 0.6f,
-            y2 = startY + layerHeight * 0.9f,
+            x2 = canvasWidth * 0.95f,
+            y2 = startY + layerHeight * 0.7f,
             x3 = canvasWidth,
             y3 = startY + layerHeight * 0.8f
         )
