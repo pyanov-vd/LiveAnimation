@@ -1,7 +1,5 @@
 package com.pyanov.liveanimation
 
-import androidx.compose.ui.unit.dp
-
 const val EMPTY_STRING = ""
 
 const val MOUNTAINS_ANIM_DURATION = 850
