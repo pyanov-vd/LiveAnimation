@@ -20,10 +20,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.pyanov.liveanimation.MOUNTAINS_ANIM_DURATION
+import com.pyanov.liveanimation.draw.eyes.EyesParams
 import com.pyanov.liveanimation.draw.eyes.drawEyes
 import com.pyanov.liveanimation.draw.mountains.BackMountains
-import com.pyanov.liveanimation.draw.mountains.FrontMountains
 import com.pyanov.liveanimation.draw.mountains.MiddleMountains
+import com.pyanov.liveanimation.draw.mountains.MountainBack
+import com.pyanov.liveanimation.draw.mountains.createAlphaAnimation
+import com.pyanov.liveanimation.draw.mountains.createOffsetAnimation
 import com.pyanov.liveanimation.draw.mountains.drawMountainLayer
 import com.pyanov.liveanimation.draw.sun.DrawSun
 import liveanimation.sharedliveanim.generated.resources.Res
@@ -31,7 +35,7 @@ import liveanimation.sharedliveanim.generated.resources.ill_cloud
 import liveanimation.sharedliveanim.generated.resources.ill_sunglasses
 import org.jetbrains.compose.resources.painterResource
 
-private const val ANIM_DURATION = 850
+
 private const val CLOUD_ANIM_DURATION = 400
 
 private val SUNGLASSES_SIZE = 100.dp
@@ -40,8 +44,8 @@ private val EYES_AND_SUNGLASSES_INVISIBLE_OFFSET_Y = (-100).dp
 
 @Composable
 fun MountainBackground(
-    animateMountainLayers: Boolean,
     pupilOffsetY: Float,
+    animateMountainLayers: Boolean,
     isPasswordActuallyVisible: Boolean,
 ) {
     BoxWithConstraints {
@@ -60,37 +64,26 @@ fun MountainBackground(
         val targetEyeAndCloudCenterYDp =
             mountainVisualTopDp + (mountainVisualHeightDp * eyesVerticalPositionOnMountainRatio)
 
-        val backLayerOffsetY by animateFloatAsState(
-            targetValue = if (animateMountainLayers) 0f else 2000f,
-            animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 0),
+        val backLayerOffsetY by createOffsetAnimation(
+            animateMountainLayers = animateMountainLayers,
+            delayMillis = 0,
             label = "backLayerOffsetY"
         )
-        val backLayerAlpha by animateFloatAsState(
-            targetValue = if (animateMountainLayers) 1f else 0f,
-            animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 0),
+        val backLayerAlpha by createAlphaAnimation(
+            animateMountainLayers = animateMountainLayers,
+            delayMillis = 0,
             label = "backLayerAlpha"
         )
 
-        val middleLayerOffsetY by animateFloatAsState(
-            targetValue = if (animateMountainLayers) 0f else 2000f,
-            animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 200),
+        val middleLayerOffsetY by createOffsetAnimation(
+            animateMountainLayers = animateMountainLayers,
+            delayMillis = 200,
             label = "middleLayerOffsetY"
         )
-        val middleLayerAlpha by animateFloatAsState(
-            targetValue = if (animateMountainLayers) 1f else 0f,
-            animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 200),
+        val middleLayerAlpha by createAlphaAnimation(
+            animateMountainLayers = animateMountainLayers,
+            delayMillis = 200,
             label = "middleLayerAlpha"
-        )
-
-        val frontLayerOffsetY by animateFloatAsState(
-            targetValue = if (animateMountainLayers) 0f else 2000f,
-            animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 350),
-            label = "frontLayerOffsetY"
-        )
-        val frontLayerAlpha by animateFloatAsState(
-            targetValue = if (animateMountainLayers) 1f else 0f,
-            animationSpec = tween(durationMillis = ANIM_DURATION, delayMillis = 350),
-            label = "frontLayerAlpha"
         )
 
         val cloudInitialXOffsetDp = -cloudHeightDp - 20.dp
@@ -110,7 +103,7 @@ fun MountainBackground(
 
         val animatedCloudXOffsetDp by animateDpAsState(
             targetValue = targetCloudXOffsetDp,
-            animationSpec = tween(durationMillis = if (animateMountainLayers) CLOUD_ANIM_DURATION else ANIM_DURATION),
+            animationSpec = tween(durationMillis = if (animateMountainLayers) CLOUD_ANIM_DURATION else MOUNTAINS_ANIM_DURATION),
             label = "cloudOffsetX"
         )
 
@@ -119,7 +112,10 @@ fun MountainBackground(
 
         val animatedSunXOffsetDp by animateDpAsState(
             targetValue = if (animateMountainLayers) sunTargetXOffsetDp else sunInitialXOffsetDp,
-            animationSpec = tween(durationMillis = ANIM_DURATION, easing = FastOutSlowInEasing),
+            animationSpec = tween(
+                durationMillis = MOUNTAINS_ANIM_DURATION,
+                easing = FastOutSlowInEasing
+            ),
             label = "sunXOffset"
         )
 
@@ -177,16 +173,17 @@ fun MountainBackground(
             val canvasHeightPx = size.height
             val mountainVisualTopPx = canvasHeightPx * mountainVisualTopRatio
             val mountainVisualHeightPx = canvasHeightPx * mountainVisualHeightRatio
-            val eyeCenterYForDrawEyes =
-                mountainVisualTopPx + (mountainVisualHeightPx * eyesVerticalPositionOnMountainRatio)
-            val eyeCenterXForDrawEyes = canvasWidthPx * 0.32f
+            val eyeCenter = androidx.compose.ui.geometry.Offset(
+                x = canvasWidthPx * 0.32f,
+                y = mountainVisualTopPx + (mountainVisualHeightPx * eyesVerticalPositionOnMountainRatio)
+            )
             val eyeSize = mountainVisualHeightPx * 0.1f
-
             drawEyes(
-                eyeCenterX = eyeCenterXForDrawEyes,
-                eyeCenterY = eyeCenterYForDrawEyes,
-                eyeSize = eyeSize,
-                pupilOffsetY = pupilOffsetY
+                EyesParams(
+                    center = eyeCenter,
+                    eyeSize = eyeSize,
+                    pupilOffsetY = pupilOffsetY
+                )
             )
         }
 
@@ -230,16 +227,17 @@ fun MountainBackground(
             val canvasHeightPx = size.height
             val mountainVisualTopPx = canvasHeightPx * mountainVisualTopRatio
             val mountainVisualHeightPx = canvasHeightPx * mountainVisualHeightRatio
-            val eyeCenterYForDrawEyes =
-                mountainVisualTopPx + (mountainVisualHeightPx * 0.8f)
-            val eyeCenterXForDrawEyes = canvasWidthPx * 0.7f
+            val eyeCenter = androidx.compose.ui.geometry.Offset(
+                x = canvasWidthPx * 0.7f,
+                y = mountainVisualTopPx + (mountainVisualHeightPx * 0.8f)
+            )
             val eyeSize = mountainVisualHeightPx * 0.1f
-
             drawEyes(
-                eyeCenterX = eyeCenterXForDrawEyes,
-                eyeCenterY = eyeCenterYForDrawEyes,
-                eyeSize = eyeSize,
-                pupilOffsetY = pupilOffsetY
+                EyesParams(
+                    center = eyeCenter,
+                    eyeSize = eyeSize,
+                    pupilOffsetY = pupilOffsetY
+                )
             )
         }
 
@@ -266,22 +264,8 @@ fun MountainBackground(
         )
 
 
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .offset(y = frontLayerOffsetY.dp)
-                .alpha(frontLayerAlpha)
-        ) {
-            val width = size.width
-            val height = size.height
-            drawMountainLayer(
-                canvasWidth = width,
-                canvasHeight = height,
-                color = Color(0xFF3b467d),
-                layerHeight = height * 0.3f,
-                startY = height * 0.3f,
-                mountains = FrontMountains
-            )
-        }
+        MountainBack(
+            animateMountainLayers = animateMountainLayers
+        )
     }
 }

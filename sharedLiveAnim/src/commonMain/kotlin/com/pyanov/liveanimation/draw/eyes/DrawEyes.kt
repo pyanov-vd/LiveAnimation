@@ -1,55 +1,44 @@
 package com.pyanov.liveanimation.draw.eyes
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 
-fun DrawScope.drawEyes(
-    eyeCenterX: Float,
-    eyeCenterY: Float,
-    eyeSize: Float,
-    pupilOffsetY: Float
-) {
-    val eyeRadius = eyeSize * 0.5f
-    val pupilRadius = eyeRadius * 0.5f
+data class EyesParams(
+    val center: Offset,
+    val eyeSize: Float,
+    val eyeSpacing: Float = eyeSize * eyeSpacingMultiplayer,
+    val pupilOffsetY: Float
+)
 
-    // Левый глаз
+private const val halfMultiplayer = 0.5f
+private const val eyeSpacingMultiplayer = 0.45f
+fun DrawScope.drawEyes(params: EyesParams) {
+    val eyeRadius = params.eyeSize * halfMultiplayer
+    val pupilRadius = eyeRadius * halfMultiplayer
+    val leftEyeCenter = Offset(params.center.x - params.eyeSpacing, params.center.y)
+    val rightEyeCenter = Offset(params.center.x + params.eyeSpacing, params.center.y)
+
+
     drawCircle(
         color = Color.White,
         radius = eyeRadius,
-        center = Offset(
-            x = eyeCenterX - eyeSize * 0.45f,
-            y = eyeCenterY
-        )
+        center = leftEyeCenter
     )
-
-    // Правый глаз
     drawCircle(
         color = Color.White,
         radius = eyeRadius,
-        center = Offset(
-            x = eyeCenterX + eyeSize * 0.45f,
-            y = eyeCenterY
-        )
+        center = rightEyeCenter
     )
-
-    // Левый зрачок
     drawCircle(
         color = Color.Black,
         radius = pupilRadius,
-        center = Offset(
-            x = eyeCenterX - eyeSize * 0.45f,
-            y = eyeCenterY + pupilOffsetY
-        )
+        center = leftEyeCenter.copy(y = leftEyeCenter.y + params.pupilOffsetY)
     )
-
-    // Правый зрачок
     drawCircle(
         color = Color.Black,
         radius = pupilRadius,
-        center = Offset(
-            x = eyeCenterX + eyeSize * 0.45f,
-            y = eyeCenterY + pupilOffsetY
-        )
+        center = rightEyeCenter.copy(y = rightEyeCenter.y + params.pupilOffsetY)
     )
 }
