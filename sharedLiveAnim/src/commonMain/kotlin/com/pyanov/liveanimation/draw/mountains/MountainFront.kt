@@ -14,7 +14,7 @@ private const val DELAY = 350
 private const val LABEL = "frontLayerOffsetY"
 
 @Composable
-fun MountainBack(
+fun MountainFront(
     animateMountainLayers: Boolean,
 ) {
     val frontLayerOffsetY by createOffsetAnimation(

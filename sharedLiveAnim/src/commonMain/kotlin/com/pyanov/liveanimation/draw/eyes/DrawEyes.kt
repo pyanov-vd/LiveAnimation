@@ -4,10 +4,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import com.pyanov.liveanimation.MOUNTAIN_VISUAL_HEIGHT_RATION
+import com.pyanov.liveanimation.MOUNTAIN_VISUAL_TOP_RATIO
 
 private const val halfMultiplayer = 0.5f
-private const val mountainVisualTopRatio = 0.1f
-private const val mountainVisualHeightRatio = 0.4f
 
 fun calculateEyesParamsByCanvasSize(
     size: Size,
@@ -16,8 +16,8 @@ fun calculateEyesParamsByCanvasSize(
 ): EyesParams {
     val canvasWidthPx = size.width
     val canvasHeightPx = size.height
-    val mountainVisualTopPx = canvasHeightPx * mountainVisualTopRatio
-    val mountainVisualHeightPx = canvasHeightPx * mountainVisualHeightRatio
+    val mountainVisualTopPx = canvasHeightPx * MOUNTAIN_VISUAL_TOP_RATIO
+    val mountainVisualHeightPx = canvasHeightPx * MOUNTAIN_VISUAL_HEIGHT_RATION
     val eyeCenter = Offset(
         x = canvasWidthPx * positionOffsetRatio.x,
         y = mountainVisualTopPx + (mountainVisualHeightPx * positionOffsetRatio.y)
