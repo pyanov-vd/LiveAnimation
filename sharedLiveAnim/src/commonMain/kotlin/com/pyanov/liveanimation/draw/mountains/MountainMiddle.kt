@@ -1,5 +1,7 @@
 package com.pyanov.liveanimation.draw.mountains
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -19,8 +21,9 @@ private const val LABEL = "middleLayerOffsetY"
 @Composable
 fun MountainMiddle(
     animateMountainLayers: Boolean,
+    isKeyboardVisible: Boolean,
     isPasswordActuallyVisible: Boolean,
-    pupilOffsetY: Float,
+    pupilOffset: Offset,
 ) {
     val middleLayerOffsetY by createOffsetAnimation(
         visibleFactor = animateMountainLayers,
@@ -31,6 +34,18 @@ fun MountainMiddle(
         visibleFactor = animateMountainLayers,
         delayMillis = DELAY,
         label = LABEL
+    )
+
+    val realPupilYoffsetByConditions = when {
+        !isKeyboardVisible -> 0f
+        isPasswordActuallyVisible -> 20f
+        else -> -20f
+    }
+
+    val animatedExtraYOffset by animateFloatAsState(
+        targetValue = realPupilYoffsetByConditions,
+        animationSpec = tween(durationMillis = 300),
+        label = "middleEyesExtraYOffset"
     )
 
     Canvas(
@@ -60,7 +75,7 @@ fun MountainMiddle(
         val eyesParams = calculateEyesParamsByCanvasSize(
             size = size,
             positionOffsetRatio = Offset(0.7f, 0.8f),
-            pupilOffsetY = pupilOffsetY
+            pupilOffset = pupilOffset.copy(y = animatedExtraYOffset)
         )
         drawEyes(eyesParams)
     }

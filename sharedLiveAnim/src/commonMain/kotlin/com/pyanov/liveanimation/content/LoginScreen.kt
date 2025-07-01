@@ -4,10 +4,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -22,7 +20,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 
@@ -31,8 +28,6 @@ fun LoginScreen(
     isAnimatedAlready: Boolean = false,
     passwordPreviewVisibility: Boolean = true,
 ) {
-    val density = LocalDensity.current
-    val isKeyboardVisible = WindowInsets.ime.getBottom(density) > 0
 
     var animateAuthFields by remember { mutableStateOf(isAnimatedAlready) }
     var isPasswordVisible by remember { mutableStateOf(passwordPreviewVisibility) }
@@ -42,14 +37,6 @@ fun LoginScreen(
         animateAuthFields = true
     }
 
-    // Анимация смещения зрачков
-    val pupilOffsetY by animateFloatAsState(
-        targetValue = if (isKeyboardVisible) 20f else 0f,
-        animationSpec = tween(durationMillis = 300),
-        label = "pupilOffset"
-    )
-
-    // Анимация для AuthInputFields (масштаб и прозрачность)
     val authInputFieldsScale by animateFloatAsState(
         targetValue = if (animateAuthFields) 1f else 0f,
         animationSpec = tween(durationMillis = 850, delayMillis = 550),
@@ -74,14 +61,11 @@ fun LoginScreen(
                 )
             )
     ) {
-        // Фон с горами и глазами
         MountainsContent(
             animateMountainLayers = animateAuthFields,
-            pupilOffsetY = pupilOffsetY,
             isPasswordActuallyVisible = isPasswordVisible // Pass the state here
         )
 
-        // Поля ввода
         AuthInputFields(
             modifier = Modifier
                 .fillMaxWidth()

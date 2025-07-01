@@ -12,7 +12,7 @@ private const val halfMultiplayer = 0.5f
 fun calculateEyesParamsByCanvasSize(
     size: Size,
     positionOffsetRatio: Offset,
-    pupilOffsetY: Float,
+    pupilOffset: Offset,
 ): EyesParams {
     val canvasWidthPx = size.width
     val canvasHeightPx = size.height
@@ -27,7 +27,7 @@ fun calculateEyesParamsByCanvasSize(
     return EyesParams(
         center = eyeCenter,
         eyeSize = eyeSize,
-        pupilOffsetY = pupilOffsetY
+        pupilOffset = pupilOffset
     )
 }
 
@@ -36,7 +36,6 @@ fun DrawScope.drawEyes(params: EyesParams) {
     val pupilRadius = eyeRadius * halfMultiplayer
     val leftEyeCenter = Offset(params.center.x - params.eyeSpacing, params.center.y)
     val rightEyeCenter = Offset(params.center.x + params.eyeSpacing, params.center.y)
-
 
     drawCircle(
         color = Color.White,
@@ -51,11 +50,11 @@ fun DrawScope.drawEyes(params: EyesParams) {
     drawCircle(
         color = Color.Black,
         radius = pupilRadius,
-        center = leftEyeCenter.copy(y = leftEyeCenter.y + params.pupilOffsetY)
+        center = leftEyeCenter + params.pupilOffset
     )
     drawCircle(
         color = Color.Black,
         radius = pupilRadius,
-        center = rightEyeCenter.copy(y = rightEyeCenter.y + params.pupilOffsetY)
+        center = rightEyeCenter + params.pupilOffset
     )
 }

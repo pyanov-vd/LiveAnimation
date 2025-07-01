@@ -33,8 +33,9 @@ const val eyesVerticalPositionOnMountainRatio = 0.6f
 @Composable
 fun MountainBack(
     animateMountainLayers: Boolean,
+    isKeyboardVisible: Boolean,
     isPasswordActuallyVisible: Boolean,
-    pupilOffsetY: Float,
+    pupilOffset: Offset,
 ) {
 
     val backLayerOffsetY by createOffsetAnimation(
@@ -59,14 +60,10 @@ fun MountainBack(
         val targetEyeAndCloudCenterYDp =
             mountainVisualTopDp + (mountainVisualHeightDp * eyesVerticalPositionOnMountainRatio)
 
-        val targetCloudXOffsetDp = if (!animateMountainLayers) {
-            cloudInitialXOffsetDp
-        } else {
-            if (isPasswordActuallyVisible) {
-                cloudPositionWhenPasswordVisibleDp
-            } else {
-                cloudPositionWhenPasswordHiddenDp
-            }
+        val targetCloudXOffsetDp = when {
+            !animateMountainLayers -> cloudInitialXOffsetDp
+            isKeyboardVisible && !isPasswordActuallyVisible -> cloudPositionWhenPasswordHiddenDp
+            else -> cloudPositionWhenPasswordVisibleDp
         }
 
         val animatedCloudXOffsetDp by animateDpAsState(
@@ -102,7 +99,7 @@ fun MountainBack(
             val eyesParams = calculateEyesParamsByCanvasSize(
                 size = size,
                 positionOffsetRatio = Offset(0.32f, 0.6f),
-                pupilOffsetY = pupilOffsetY
+                pupilOffset = pupilOffset
             )
             drawEyes(eyesParams)
         }

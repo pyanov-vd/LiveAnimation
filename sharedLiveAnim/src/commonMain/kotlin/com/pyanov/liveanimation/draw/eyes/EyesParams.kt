@@ -7,5 +7,5 @@ data class EyesParams(
     val center: Offset,
     val eyeSize: Float,
     val eyeSpacing: Float = eyeSize * eyeSpacingMultiplayer,
-    val pupilOffsetY: Float
+    val pupilOffset: Offset
 )
