@@ -75,7 +75,7 @@ fun LoginScreen(
             )
     ) {
         // Фон с горами и глазами
-        MountainBackground(
+        MountainsContent(
             animateMountainLayers = animateAuthFields,
             pupilOffsetY = pupilOffsetY,
             isPasswordActuallyVisible = isPasswordVisible // Pass the state here

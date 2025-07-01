@@ -5,15 +5,32 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 
-data class EyesParams(
-    val center: Offset,
-    val eyeSize: Float,
-    val eyeSpacing: Float = eyeSize * eyeSpacingMultiplayer,
-    val pupilOffsetY: Float
-)
-
 private const val halfMultiplayer = 0.5f
-private const val eyeSpacingMultiplayer = 0.45f
+private const val mountainVisualTopRatio = 0.1f
+private const val mountainVisualHeightRatio = 0.4f
+
+fun calculateEyesParamsByCanvasSize(
+    size: Size,
+    positionOffsetRatio: Offset,
+    pupilOffsetY: Float,
+): EyesParams {
+    val canvasWidthPx = size.width
+    val canvasHeightPx = size.height
+    val mountainVisualTopPx = canvasHeightPx * mountainVisualTopRatio
+    val mountainVisualHeightPx = canvasHeightPx * mountainVisualHeightRatio
+    val eyeCenter = Offset(
+        x = canvasWidthPx * positionOffsetRatio.x,
+        y = mountainVisualTopPx + (mountainVisualHeightPx * positionOffsetRatio.y)
+    )
+    val eyeSize = mountainVisualHeightPx * 0.1f
+
+    return EyesParams(
+        center = eyeCenter,
+        eyeSize = eyeSize,
+        pupilOffsetY = pupilOffsetY
+    )
+}
+
 fun DrawScope.drawEyes(params: EyesParams) {
     val eyeRadius = params.eyeSize * halfMultiplayer
     val pupilRadius = eyeRadius * halfMultiplayer

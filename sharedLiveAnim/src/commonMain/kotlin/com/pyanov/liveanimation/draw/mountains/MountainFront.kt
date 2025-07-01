@@ -11,20 +11,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 private const val DELAY = 350
+private const val LABEL = "frontLayerOffsetY"
 
 @Composable
 fun MountainBack(
     animateMountainLayers: Boolean,
 ) {
     val frontLayerOffsetY by createOffsetAnimation(
-        animateMountainLayers = animateMountainLayers,
+        visibleFactor = animateMountainLayers,
         delayMillis = DELAY,
-        label = "frontLayerOffsetY"
+        label = LABEL
     )
     val frontLayerAlpha by createAlphaAnimation(
-        animateMountainLayers = animateMountainLayers,
+        visibleFactor = animateMountainLayers,
         delayMillis = DELAY,
-        label = "frontLayerAlpha"
+        label = LABEL
     )
 
     Canvas(

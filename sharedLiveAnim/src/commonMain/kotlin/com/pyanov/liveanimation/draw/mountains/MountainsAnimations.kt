@@ -8,22 +8,24 @@ import com.pyanov.liveanimation.MOUNTAINS_ANIM_DURATION
 
 @Composable
 fun createOffsetAnimation(
-    animateMountainLayers: Boolean,
-    delayMillis: Int,
+    visibleFactor: Boolean,
     label: String,
+    durationMillis: Int = MOUNTAINS_ANIM_DURATION,
+    delayMillis: Int = 0,
 ): State<Float> = animateFloatAsState(
-    targetValue = if (animateMountainLayers) 0f else 2000f,
-    animationSpec = tween(durationMillis = MOUNTAINS_ANIM_DURATION, delayMillis = delayMillis),
+    targetValue = if (visibleFactor) 0f else 2000f,
+    animationSpec = tween(durationMillis = durationMillis, delayMillis = delayMillis),
     label = label
 )
 
 @Composable
 fun createAlphaAnimation(
-    animateMountainLayers: Boolean,
-    delayMillis: Int,
+    visibleFactor: Boolean,
     label: String,
+    durationMillis: Int = MOUNTAINS_ANIM_DURATION,
+    delayMillis: Int = 0,
 ): State<Float> = animateFloatAsState(
-    targetValue = if (animateMountainLayers) 1f else 0f,
-    animationSpec = tween(durationMillis = MOUNTAINS_ANIM_DURATION, delayMillis = delayMillis),
+    targetValue = if (visibleFactor) 1f else 0f,
+    animationSpec = tween(durationMillis = durationMillis, delayMillis = delayMillis),
     label = label
 )
