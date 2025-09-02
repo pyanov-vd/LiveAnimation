@@ -1,16 +1,19 @@
+import UIKit
 import SwiftUI
 import sharedLiveAnim
 
-struct ContentView: View {
-	let greet = Greeting().greet()
+struct ComposeView: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> UIViewController {
+        MainKt.MainViewController()
+    }
 
-	var body: some View {
-		Text(greet)
-	}
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
 
-struct ContentView_Previews: PreviewProvider {
-	static var previews: some View {
-		ContentView()
-	}
+struct ContentView: View {
+    var body: some View {
+        ComposeView()
+         .ignoresSafeArea(edges: .all) // For using status/bottom bars area
+         .ignoresSafeArea(.keyboard) // Compose has own keyboard handler
+    }
 }
