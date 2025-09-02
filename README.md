@@ -1,6 +1,6 @@
 ## Live Animation Demo Project
 
-![Demo](demo/LiveAnimDemo_1.gif)
+![Demo](demo/LoginPageDemo.gif)
 
 ## About the project
 
